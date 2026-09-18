@@ -1,0 +1,640 @@
+<title>VUGD Radiosaukļi</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap">
+<style>
+:root{
+  --bg:#eef0f2; --surface:#fff; --surface-2:#f7f8f9; --surface-3:#eceff1;
+  --ink:#16191d; --ink-2:#4a5158; --ink-3:#7d858d;
+  --line:#d6dade; --line-2:#c3c9ce;
+  --accent:#c8102e; --accent-soft:#fdecee; --accent-ink:#c8102e; --on-accent:#fff;
+  --ok:#0f7a4f; --ok-soft:#e7f4ee;
+  --warn:#8a5a00; --warn-soft:#fdf3e0;
+  --shadow:0 1px 2px rgba(20,25,30,.06),0 8px 24px -12px rgba(20,25,30,.18);
+  --sans:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0e1215; --surface:#171c21; --surface-2:#1e242a; --surface-3:#232a31;
+  --ink:#e6eaed; --ink-2:#a3acb4; --ink-3:#6f787f;
+  --line:#2a3238; --line-2:#3a444c;
+  --accent:#ff6b74; --accent-soft:#2a1519; --accent-ink:#ff8b92; --on-accent:#16090b;
+  --ok:#4ec98d; --ok-soft:#12231b;
+  --warn:#e0b060; --warn-soft:#251d0e;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+}}
+:root[data-theme="dark"]{
+  --bg:#0e1215; --surface:#171c21; --surface-2:#1e242a; --surface-3:#232a31;
+  --ink:#e6eaed; --ink-2:#a3acb4; --ink-3:#6f787f;
+  --line:#2a3238; --line-2:#3a444c;
+  --accent:#ff6b74; --accent-soft:#2a1519; --accent-ink:#ff8b92; --on-accent:#16090b;
+  --ok:#4ec98d; --ok-soft:#12231b;
+  --warn:#e0b060; --warn-soft:#251d0e;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;
+  padding:0 16px;padding-block:20px 48px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+
+/* ---- header ---- */
+header{display:flex;flex-direction:column;gap:6px}
+.eyebrow{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--accent-ink)}
+h1{margin:0;font-size:clamp(22px,5.4vw,30px);font-weight:700;letter-spacing:-.02em;text-wrap:balance}
+.srcline{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);line-height:1.6}
+.theme-btn{position:absolute;right:16px;top:20px;background:var(--surface);border:1px solid var(--line);
+  color:var(--ink-2);border-radius:8px;width:32px;height:32px;font-size:14px;cursor:pointer;line-height:1}
+.hd{position:relative}
+
+/* ---- controls ---- */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;
+  display:flex;flex-direction:column;gap:12px}
+.seg{display:flex;background:var(--surface-3);border-radius:9px;padding:3px;gap:3px}
+.seg button{flex:1;border:0;background:transparent;color:var(--ink-2);font-family:var(--sans);
+  font-size:13px;font-weight:600;padding:7px 4px;border-radius:7px;cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.lbl{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-3)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface-2);color:var(--ink-2);border-radius:999px;
+  padding:5px 11px;font-size:12.5px;font-weight:500;cursor:pointer;font-family:var(--sans)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.chip .cnt{font-family:var(--mono);font-size:11px;opacity:.7;margin-left:4px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.toggle{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-2);cursor:pointer}
+
+/* ---- progress ---- */
+.status{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:baseline;
+  font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+.status b{font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.bar{height:4px;background:var(--surface-3);border-radius:999px;overflow:hidden;display:flex}
+.bar i{display:block;height:100%}
+.bar .b-ok{background:var(--ok)}
+.bar .b-no{background:var(--accent)}
+
+/* ---- question card ---- */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);
+  overflow:hidden}
+.card-top{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);
+  background:var(--surface-2)}
+.num{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--accent-ink);
+  font-variant-numeric:tabular-nums}
+.tag{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);border:1px solid var(--line-2);border-radius:5px;padding:2px 6px}
+.tag.warnt{color:var(--warn);border-color:var(--warn);background:var(--warn-soft)}
+.q{padding:20px 16px;font-size:clamp(16px,3.8vw,19px);font-weight:500;line-height:1.42;text-wrap:balance}
+.card-body{padding:0 16px 16px;display:flex;flex-direction:column;gap:12px}
+
+.ans{background:var(--surface-2);border:1px solid var(--line);border-left:3px solid var(--accent);
+  border-radius:8px;padding:14px}
+.ans .a-main{font-family:var(--mono);font-size:clamp(17px,4.4vw,22px);font-weight:700;
+  color:var(--ink);word-break:break-word;line-height:1.3}
+.ans .a-text{font-family:var(--sans);font-size:15px;font-weight:500;line-height:1.5}
+.ans .a-note{margin-top:8px;font-size:12.5px;color:var(--ink-2);line-height:1.5}
+.ans .a-src{margin-top:8px;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.ans.miss{border-left-color:var(--warn)}
+.ans.miss .a-main{color:var(--warn)}
+
+input[type=text]{width:100%;font-family:var(--mono);font-size:17px;font-weight:600;padding:12px 13px;
+  border:1px solid var(--line-2);border-radius:9px;background:var(--surface-2);color:var(--ink)}
+input[type=text]:focus-visible{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+.verdict{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;padding:9px 12px;
+  border-radius:8px}
+.verdict.good{background:var(--ok-soft);color:var(--ok)}
+.verdict.bad{background:var(--accent-soft);color:var(--accent-ink)}
+
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+button.bt{font-family:var(--sans);font-size:14px;font-weight:600;padding:10px 16px;border-radius:9px;
+  border:1px solid var(--line-2);background:var(--surface-2);color:var(--ink);cursor:pointer}
+button.bt:hover{background:var(--surface-3)}
+button.bt.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+button.bt.good{border-color:var(--ok);color:var(--ok);background:var(--ok-soft)}
+button.bt.bad{border-color:var(--accent);color:var(--accent-ink);background:var(--accent-soft)}
+button.bt.wide{flex:1;min-width:130px}
+button.bt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.hint{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+
+/* ---- browse ---- */
+.search{width:100%;font-family:var(--sans);font-size:14px;font-weight:400;padding:10px 12px;
+  border:1px solid var(--line-2);border-radius:9px;background:var(--surface);color:var(--ink)}
+.tbl-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:520px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top;font-size:13.5px}
+th{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-3);background:var(--surface-2);position:sticky;top:0}
+tr:last-child td{border-bottom:0}
+td.n{font-family:var(--mono);font-weight:600;color:var(--accent-ink);width:44px;font-variant-numeric:tabular-nums}
+td.a{font-family:var(--mono);font-weight:700;white-space:nowrap}
+td.a.free{font-family:var(--sans);font-weight:500;white-space:normal;min-width:200px}
+.grp td{background:var(--surface-3);font-family:var(--mono);font-size:10.5px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.done{text-align:center;padding:26px 16px}
+.done .big{font-family:var(--mono);font-size:34px;font-weight:700;font-variant-numeric:tabular-nums}
+footer{font-size:12px;color:var(--ink-3);line-height:1.6;border-top:1px solid var(--line);padding-top:12px}
+@media (prefers-reduced-motion:no-preference){.card{transition:none}}
+</style>
+
+<div class="wrap">
+  <div class="hd">
+    <button class="theme-btn" id="themeBtn" title="Tēma" aria-label="Mainīt tēmu">◑</button>
+    <header>
+      <div class="eyebrow">Noslēguma pārbaudījums · 113 jautājumi</div>
+      <h1>VUGD radiosaukļi un BGK</h1>
+      <div class="srcline">Ugunsdzēsības un glābšanas tehnika un aprīkojums<br>
+        Avots: VUGD 31.12.2025. rīkojums Nr. 22-1.7/2804 (1.–6. pielikums), spēkā no 08.01.2026.</div>
+    </header>
+  </div>
+
+  <div class="panel">
+    <div>
+      <div class="lbl" style="margin-bottom:6px">Režīms</div>
+      <div class="seg" id="modeSeg">
+        <button data-mode="flash" aria-pressed="true">Kartītes</button>
+        <button data-mode="type" aria-pressed="false">Ierakstīt atbildi</button>
+        <button data-mode="browse" aria-pressed="false">Visas atbildes</button>
+      </div>
+    </div>
+    <div>
+      <div class="lbl" style="margin-bottom:6px">Temati</div>
+      <div class="chips" id="blockChips"></div>
+    </div>
+    <div class="row" id="optRow">
+      <label class="toggle"><input type="checkbox" id="shuf" checked> Sajaukt secību</label>
+      <label class="toggle"><input type="checkbox" id="onlyWrong"> Tikai nezināmie</label>
+      <button class="bt" id="restart" style="margin-left:auto;padding:7px 12px;font-size:13px">Sākt no sākuma</button>
+    </div>
+  </div>
+
+  <div id="quizView">
+    <div class="status">
+      <span><b id="pos">0</b> / <b id="total">0</b></span>
+      <span>pareizi <b id="scOk" style="color:var(--ok)">0</b></span>
+      <span>nepareizi <b id="scNo" style="color:var(--accent-ink)">0</b></span>
+      <span id="pct" style="margin-left:auto"></span>
+    </div>
+    <div class="bar" style="margin:8px 0 14px"><i class="b-ok" id="barOk"></i><i class="b-no" id="barNo"></i></div>
+    <div class="card" id="card"></div>
+  </div>
+
+  <div id="browseView" hidden>
+    <input class="search" id="search" type="text" placeholder="Meklēt jautājumā vai atbildē…" autocomplete="off">
+    <div class="tbl-scroll" style="margin-top:10px">
+      <table><thead><tr><th>Nr.</th><th>Jautājums</th><th>Radiosauklis / atbilde</th></tr></thead>
+      <tbody id="tbody"></tbody></table>
+    </div>
+  </div>
+
+  <footer>
+    <strong>Par 94.–113. jautājumu (bezpilota gaisa kuģi):</strong> šo jautājumu avota dokuments (VUGD iekšējie
+    noteikumi par BGK izmantošanu) materiālos netika iesniegts. Atbildes, kas balstītas Regulā (ES) 2019/947 un
+    2019/945, ir atzīmētas kā <em>regula</em>; jautājumi, kuriem nepieciešams VUGD iekšējais dokuments, atzīmēti
+    ar <span class="tag warnt">nav avota</span> un jāpapildina.
+  </footer>
+</div>
+
+<script>
+/* ============ DATI ============ */
+/* b: temata kods; a: atbilde; alts: pieņemamie ievades varianti; free: brīvas formas atbilde (nav ierakstāma);
+   src: avots; note: paskaidrojums; miss: avots nav iesniegts */
+const B = {
+  vad:{name:"Vadība un centrālais aparāts", short:"Vadība"},
+  reg:{name:"Reģiona pārvaldes vadība", short:"Pārvalde"},
+  teh:{name:"Dežūrmaiņa un tehnika", short:"Tehnika"},
+  kart:{name:"Vispārīgā kārtība", short:"Kārtība"},
+  bgk:{name:"Bezpilota gaisa kuģi", short:"BGK / droni"}
+};
+const P1="1.pielikums", P2="2.pielikums (RRP kolonna)", P3="3.pielikums", P5="5.pielikums, 1.kolonna";
+const RIGA="RRP 1.daļa ietilpst 5.pielikuma 1.kolonnā; Rīgas un Jūrmalas daļas izmanto tikai kārtas numuru, bez pazīšanas signāla saīsinājuma (3.pielikums, 8.p.).";
+
+const Q = [
+{n:1,b:"vad",q:"Kāds radiosauklis ir VUGD priekšniekam?",a:"1.",src:P1},
+{n:2,b:"vad",q:"Kāds radiosauklis ir VUGD priekšnieka vietniekam (Dienesta jautājumos)?",a:"2.",src:P1},
+{n:3,b:"vad",q:"Kāds radiosauklis ir VUGD priekšnieka vietniekam (Ugunsdrošības un civilās aizsardzības jautājumos)?",a:"3.",src:P1},
+{n:4,b:"vad",q:"Kāds radiosauklis ir VUGD priekšnieka vietniekam (Administratīvos jautājumos)?",a:"4.",src:P1},
+{n:5,b:"vad",q:"Kāds radiosauklis ir OVP priekšniekam?",a:"5.",src:P1},
+{n:6,b:"vad",q:"Kāds radiosauklis ir CAP priekšniekam?",a:"6.",src:P1},
+{n:7,b:"vad",q:"Kāds radiosauklis ir UUP priekšniekam?",a:"7.",src:P1},
+{n:8,b:"vad",q:"Kāds radiosauklis ir OVP OPN priekšniekam?",a:"8.",src:P1},
+{n:9,b:"vad",q:"Kāds radiosauklis ir OVP UDzGDN priekšniekam?",a:"9.",src:P1},
+{n:10,b:"vad",q:"Kāds radiosauklis ir OVP OPN operatīvajam dežurantam?",a:"OVP",src:P1},
+{n:11,b:"vad",q:"Kāds radiosauklis ir OVP OPN operatīvajam dežurantam notikuma vietā?",a:"OVP 1",src:P1},
+{n:12,b:"vad",q:"Kāds radiosauklis ir OVP amatpersonai?",a:"OVP 2…9",alts:["ovp29","ovp2 9"],src:P1},
+{n:13,b:"vad",q:"Kāds radiosauklis ir OVP OPN operatīvā dežuranta automobilim?",a:"VOD auto",
+  note:"Papildus OVP OPN operatīvā dežuranta automobilis – „VOD auto 2…9”.",src:P1},
+{n:14,b:"vad",q:"Kāds radiosauklis ir BaltFloodCombat dalībniekam?",a:"BFC 1…9",alts:["bfc19"],src:P1},
+{n:15,b:"vad",q:"Kāds radiosauklis ir PrP priekšniekam?",a:"Prese 1",src:P1},
+{n:16,b:"vad",q:"Kāds radiosauklis ir PrP amatpersonai?",a:"Prese 2…9",alts:["prese29"],src:P1},
+{n:17,b:"vad",q:"Kāds radiosauklis ir TDP priekšniekam?",a:"TDP 1",src:P1},
+{n:18,b:"vad",q:"Kāds radiosauklis ir VKCP priekšniekam?",a:"Centrs 1",src:P1},
+{n:19,b:"vad",q:"Kāds radiosauklis ir VKCP Rīgas nodaļai?",a:"Centrs",src:P1},
+{n:20,b:"vad",q:"Kāds radiosauklis ir VKCP Vidzemes nodaļai?",a:"Gauja",src:P1},
+{n:21,b:"vad",q:"Kāds radiosauklis ir VKCP Zemgales nodaļai?",a:"Lielupe",src:P1},
+{n:22,b:"vad",q:"Kāds radiosauklis ir CAP drona operatoram?",a:"VD 1…9",alts:["vd19"],src:P1},
+{n:23,b:"vad",q:"Kāds radiosauklis ir CAP dronu automobilim?",a:"VD auto",src:P1},
+{n:24,b:"vad",q:"Kāds radiosauklis ir TDP Speciālo aizsarglīdzekļu nodaļas dežūrmaiņas amatpersonai?",a:"Bāze 1…9",
+  alts:["baze19"],src:P1},
+{n:25,b:"vad",q:"Kāds radiosauklis ir TDP Speciālo aizsarglīdzekļu nodaļas automobilim?",a:"Bāzes auto",
+  note:"Papildus automobilis – „Bāzes auto 2…9”.",src:P1},
+{n:26,b:"vad",q:"Kāds radiosauklis ir koledžas direktoram?",a:"Koledža 1",src:P1},
+{n:27,b:"vad",q:"Kāds radiosauklis ir koledžas direktora vietniekam (Praktisko mācību nodaļas priekšniekam)?",
+  a:"Koledža 2",src:P1},
+{n:28,b:"vad",q:"Kāds radiosauklis ir koledžas direktora vietniekam (Izglītības koordinācijas nodaļas priekšniekam)?",
+  a:"Koledža 3",src:P1},
+{n:29,b:"vad",q:"Kāds radiosauklis ir koledžas katedras vadītājiem, docentiem, lektoriem?",a:"Koledža 4…9",
+  alts:["koledza49"],src:P1},
+
+{n:30,b:"reg",q:"Kāds radiosauklis ir pārvaldes priekšniekam? (Pēc Rīgas reģiona pārvaldes piemēra)",a:"Rīga 1",
+  note:"Pārējās: Kurzeme 1, Latgale 1, Vidzeme 1, Zemgale 1.",src:P2},
+{n:31,b:"reg",q:"Kāds radiosauklis ir pārvaldes priekšnieka vietniekam, dienesta nodaļas priekšniekam? (Pēc Rīgas reģiona pārvaldes piemēra)",
+  a:"Rīga 2",src:P2},
+{n:32,b:"reg",q:"Kāds radiosauklis ir pārvaldes priekšnieka vietniekam, Ugunsdrošības uzraudzības un civilās aizsardzības nodaļas priekšniekam? (Pēc Rīgas reģiona pārvaldes piemēra)",
+  a:"Rīga 3",src:P2},
+{n:33,b:"reg",q:"Kāds radiosauklis ir dienesta nodaļas vecākajam inspektoram? (Pēc Rīgas reģiona pārvaldes piemēra)",
+  a:"Rīga 4",src:P2},
+{n:34,b:"reg",q:"Kāds radiosauklis ir dienesta nodaļas operatīvajam dežurantam? (Pēc Rīgas reģiona pārvaldes piemēra)",
+  a:"Rīga 5",src:P2},
+{n:35,b:"reg",q:"Kāds radiosauklis ir štāba priekšniekam? (Pēc Rīgas pārvaldes piemēra)",a:"Štābs",
+  note:"Ja notikuma vietā izveidots operatīvais štābs, tā priekšnieks izmanto radiosaukli „Štābs”. Vienā sarunu grupā var būt tikai viens notikums, kurā izmanto šos saukļus.",
+  src:P3+", 11.p."},
+{n:36,b:"reg",q:"Kāds radiosauklis ir štāba priekšnieka vietniekam? (Pēc Rīgas pārvaldes piemēra)",
+  a:"Štābs – 1, Štābs – 2 utt.",alts:["stabs1","stabs 1","stabs1stabs2","stabs12"],
+  note:"Ja norīkoti vairāki operatīvā štāba priekšnieka vietnieki – „Štābs – 1”, „Štābs – 2” utt.",src:P3+", 11.p."},
+{n:37,b:"reg",q:"Kāds radiosauklis ir dienesta nodaļas operatīvā dežuranta vietniekam? (Pēc Rīgas reģiona pārvaldes piemēra)",
+  a:"Rīga 6",src:P2},
+{n:38,b:"reg",q:"Kāds radiosauklis ir papildus dienesta nodaļas operatīvajam dežurantam? (Pēc Rīgas reģiona pārvaldes piemēra)",
+  a:"Rīga 55",src:P2},
+{n:39,b:"reg",q:"Kāds radiosauklis ir papildus dienesta nodaļas operatīvā dežuranta vietniekam? (Pēc Rīgas reģiona pārvaldes piemēra)",
+  a:"Rīga 66",src:P2},
+{n:40,b:"reg",q:"Kāds radiosauklis ir nodrošinājuma priekšniekam? (Pēc Rīgas reģiona pārvaldes piemēra)",a:"Rīga 7",src:P2},
+{n:41,b:"reg",q:"Kāds radiosauklis ir dienesta nodaļas vai ugunsdrošības uzraudzības un civilās aizsardzības nodaļas amatpersonai? (Pēc Rīgas reģiona pārvaldes piemēra)",
+  a:"Rīga 8…9",alts:["riga89"],src:P2},
+{n:42,b:"reg",q:"Kāds radiosauklis ir dienesta nodaļas operatīvā dežuranta automobilim? (Pēc Rīgas reģiona pārvaldes piemēra)",
+  a:"Rīga 5 auto",src:P2},
+{n:43,b:"reg",q:"Kāds radiosauklis ir dienesta nodaļas automobilim (papildus)? (Pēc Rīgas reģiona pārvaldes piemēra)",
+  a:"RDN auto 1..9",alts:["rdnauto19","rdnauto1 9"],
+  note:"Citās pārvaldēs – KDN/LDN/VDN/ZDN auto 2..9.",src:P2},
+
+{n:44,b:"teh",q:"Kāds radiosauklis ir 1. ekipāžas komandierim? (RRP 1. daļa)",a:"10.",note:RIGA,src:P5},
+{n:45,b:"teh",q:"Kāds radiosauklis ir 1. ekipāžas 1. ugunsdzēsējam glābējam? (RRP 1. daļa)",a:"11.",src:P5},
+{n:46,b:"teh",q:"Kāds radiosauklis ir 1. ekipāžas 2. ugunsdzēsējam glābējam? (RRP 1. daļa)",a:"15.",src:P5},
+{n:47,b:"teh",q:"Kāds radiosauklis ir 2. ekipāžas komandierim? (RRP 1. daļa)",a:"12.",src:P5},
+{n:48,b:"teh",q:"Kāds radiosauklis ir 2. ekipāžas 1. ugunsdzēsējam glābējam? (RRP 1. daļa)",a:"14.",src:P5},
+{n:49,b:"teh",q:"Kāds radiosauklis ir 2. ekipāžas 2. ugunsdzēsējam glābējam? (RRP 1. daļa)",a:"16.",src:P5},
+{n:50,b:"teh",q:"Kāds radiosauklis ir 3. ekipāžas komandierim? (RRP 1. daļa)",a:"13.",src:P5},
+{n:51,b:"teh",q:"Kāds radiosauklis ir 4. ekipāžas komandierim? (RRP 1. daļa)",a:"17.",src:P5},
+{n:52,b:"teh",q:"Kāds radiosauklis ir 4. ekipāžas ugunsdzēsējam glābējam? (RRP 1. daļa)",a:"18.",src:P5},
+{n:53,b:"teh",q:"Kāds radiosauklis ir BUB ekipāžas komandierim?",a:"99.",
+  note:"BUB ekipāžas komandierim saukli ņem no 5.pielikuma 9.kolonnas – tā ir vienīgā kolonna, kurā šai pozīcijai ir vērtība.",
+  src:"5.pielikums, 9.kolonna"},
+{n:54,b:"teh",q:"Kāds radiosauklis ir 1. ekipāžas autocisternai (AC)? (RRP 1. daļa)",a:"101.",src:P5},
+{n:55,b:"teh",q:"Kāds radiosauklis ir 2. ekipāžas autocisternai (AC)? (RRP 1. daļa)",a:"102.",src:P5},
+{n:56,b:"teh",q:"Kāds radiosauklis ir autokāpnei (AK)? (RRP 1. daļa)",a:"103.",
+  note:"Ja AK vai ACP ir bez groza, VKCP IS papildus norāda „b/g” (piem. „203.b/g”) – radioapmaiņā to neizmanto.",src:P5},
+{n:57,b:"teh",q:"Kāds radiosauklis ir autocisternai ar pacēlāju (ACP)? (RRP 1. daļa)",a:"104.",src:P5},
+{n:58,b:"teh",q:"Kāds radiosauklis ir glābšanas darbu automobilim (GA)? (RRP 1. daļa)",a:"105.",src:P5},
+{n:59,b:"teh",q:"Kāds radiosauklis ir ķīmijas avāriju un glābšanas darbu automobilim (ĶGA)? (RRP 1. daļa)",a:"106.",src:P5},
+{n:60,b:"teh",q:"Kāds radiosauklis ir sūkņu un šļūteņu automobilim (SŠ)? (RRP 1. daļa)",a:"107.",src:P5},
+{n:61,b:"teh",q:"Kāds radiosauklis ir bezceļa transportlīdzeklim (UTV) 6x6? (RRP 1. daļa)",a:"108.",
+  note:"Ja aprīkots ar ūdens padošanas iekārtām ugunsgrēku dzēšanai, papildus norāda „ū” (piem. „108.ū”).",src:P5},
+{n:62,b:"teh",q:"Kāds radiosauklis ir bezceļa transportlīdzeklim (ATV) 4x4? (RRP 1. daļa)",a:"109.",src:P5},
+{n:63,b:"teh",q:"Kāds radiosauklis ir ķīmijas avāriju automobilim (ĶA)? (RRP 1. daļa)",a:"110.",src:P5},
+{n:64,b:"teh",q:"Kāds radiosauklis ir tehniskās palīdzības automobilim (TA)? (RRP 1. daļa)",a:"111.",src:P5},
+{n:65,b:"teh",q:"Kāds radiosauklis ir konteineru vedējam (KV)? (RRP 1. daļa)",a:"112.",src:P5},
+{n:66,b:"teh",q:"Kāds radiosauklis ir konteinerim (KT)? (RRP 1. daļa)",a:"113.X",
+  note:"X vietā norāda abreviatūru pēc konteinera nozīmes (A, B, BR, E, IZ, KK, M, MŽ, N, P, PL, SN, S, SŠ, Š, TR, Ū, OŠ, OVC). Radioapmaiņā izmanto nosaukumu bez burtu saīsinājuma.",
+  src:P5+" + 3.pielikums, 21.p."},
+{n:67,b:"teh",q:"Kāds radiosauklis ir piekabei (PK)? (RRP 1. daļa)",a:"114.X",
+  note:"X vietā – abreviatūra pēc piekabes nozīmes (A, B, D, E, GK, KK, KV, KUT, ĶA, LAI, M, P, S, SŠ, Š, T, TR, ŪD). Piekabei ar pilno masu virs 750 kg papildus norāda „e” (piem. „714.e.B”).",
+  src:P5+" + 3.pielikums, 22.p."},
+{n:68,b:"teh",q:"Kāds radiosauklis ir kuterim (KUT)? (RRP 1. daļa)",a:"115.",
+  note:"Kuteris – kuģošanas līdzeklis, kura izmantošanai, sagatavošanai un ielaišanai ūdenī nepietiek ar divu ekipāžu cilvēku resursu un ir nepieciešama speciāli sagatavota nolaišanas vieta.",src:P5},
+{n:69,b:"teh",q:"Kāds radiosauklis ir pasažieru furgonam (≤3,5 t) (VF)? (RRP 1. daļa)",a:"116.",src:P5},
+{n:70,b:"teh",q:"Kāds radiosauklis ir kravas furgonam (≤3,5 t) (KF)? (RRP 1. daļa)",a:"116.K",src:P5},
+{n:71,b:"teh",q:"Kāds radiosauklis ir vieglajam automobilim (≤3,5 t)? (RRP 1. daļa)",a:"117.",src:P5},
+{n:72,b:"teh",q:"Kāds radiosauklis ir vieglajam automobilim (≤3,5 t) ar kravas kasti? (RRP 1. daļa)",a:"117.K",src:P5},
+{n:73,b:"teh",q:"Kāds radiosauklis ir laivai (LAI)? (RRP 1. daļa)",a:"118.",
+  note:"Laiva – kuģošanas līdzeklis, kura izmantošanai, sagatavošanai un ielaišanai ūdenī pietiek ar divu ekipāžu cilvēku resursu un nav nepieciešama speciāli sagatavota nolaišanas vieta.",src:P5},
+{n:74,b:"teh",q:"Kāds radiosauklis ir laivai bez motora (ar airiem)?",a:"118.a",
+  alts:["118a","laivasradiosauklisar a","a"],
+  note:"Laivai bez motora (ar airiem) papildus norāda „a” – piem. „118.a”, „SI118.a”, „L118.2.a”. Tā ir papildus informācija VKCP IS; radioapmaiņā to neizmanto.",
+  src:"3.pielikums, 20.p."},
+{n:75,b:"teh",q:"Kāds radiosauklis ir ūdenslīdēju automobilim (ŪA)? (RRP 1. daļa)",a:"119.",src:P5},
+{n:76,b:"teh",q:"Kāds radiosauklis ir ķīmijas avāriju automobilim ar bonām (BĶA)? (RRP 1. daļa)",a:"120.",src:P5},
+{n:77,b:"teh",q:"Kāds radiosauklis ir 3. ekipāžas autocisternai? (RRP 1. daļa)",a:"121.",
+  note:"Ja daļā ir vairāk par četrām AC, katrai nākošajai piešķir kārtas numuru: 5.AC „122.1”… pēc principa 4.AC „VE122.1”, 5.AC „VE122.2”.",src:P5},
+{n:78,b:"teh",q:"Kāds radiosauklis ir 4. ekipāžas autocisternai? (RRP 1. daļa)",a:"122.",src:P5},
+{n:79,b:"teh",q:"Kāds radiosauklis ir 2. autokāpnei? (RRP 1. daļa)",a:"123.",
+  note:"Ja daļā ir vairāk par divām AK, katrai nākošajai papildus piešķir kārtas numuru: 2.AK „223.1”, 3.AK „223.2” utt.",src:P5},
+{n:80,b:"teh",q:"Kāds radiosauklis ir traktortehnikai (≤7,5 t) (TR)? (RRP 1. daļa)",a:"124.",
+  note:"Papildus burti VKCP IS: „m” – maināmi agregāti, „ek” – ekskavatora funkcija, „i” – iekrāvējs.",src:P5},
+{n:81,b:"teh",q:"Kāds radiosauklis ir traktortehnikai (>7,5 t) (TR)? (RRP 1. daļa)",a:"125.",src:P5},
+{n:82,b:"teh",q:"Kāds radiosauklis ir kravas automobilim C kat. (≤7,5 t)? (RRP 1. daļa)",a:"126.",src:P5},
+{n:83,b:"teh",q:"Kāds radiosauklis ir kravas automobilim C kat. (>7,5 t)? (RRP 1. daļa)",a:"126.K",src:P5},
+{n:84,b:"teh",q:"Kāds radiosauklis ir autobusam D1 kat. (16+1, <8 m)? (RRP 1. daļa)",a:"127.",src:P5},
+{n:85,b:"teh",q:"Kāds radiosauklis ir autobusam D kat.? (RRP 1. daļa)",a:"127.D",src:P5},
+{n:86,b:"teh",q:"Kāds radiosauklis ir daļas, posteņa komandierim? (Pēc Rīgas reģiona pārvaldes Ādažu daļas piemēra)",
+  a:"Ādaži 1",alts:["adazi1"],
+  note:"Daļas, posteņa komandieris izmanto attiecīgās struktūrvienības pazīšanas signālu (4.pielikums) ar ciparu viens – piem. „Ādaži 1”, „Nereta 1”.",
+  src:"3.pielikums, 3.p. + 4.pielikums"},
+{n:87,b:"teh",q:"Kāds radiosauklis ir daļas, posteņa amatpersonai, kura norīkota pildīt daļas vai posteņa komandiera pienākumus un kurai nav noteikts cits ikdienas radiosauklis? (Ādažu daļa)",
+  a:"Ādaži 2",alts:["adazi2"],
+  note:"Pazīšanas signāls ar ciparu divi – piem. „Ādaži 2”, „Nereta 2”. Savukārt, ja amatpersona norīkota pildīt augstāk stāvošas amatpersonas pienākumus (1. vai 2.pielikums), izmanto augstākstāvošās amatpersonas radiosaukli.",
+  src:"3.pielikums, 4.–5.p."},
+{n:88,b:"teh",q:"Kāds radiosauklis ir konteinerim ar bonām? (RRP 1. daļa)",a:"113.B",
+  note:"Konteinera saukli veido no 5.pielikuma („113.X”), X vietā liekot nozīmes abreviatūru: B – konteineris ar bonām. Salīdzinājumam: N – ar norobežojošām bonām, BR – ar plūdu barjerām.",
+  src:"5.pielikums + 3.pielikums, 21.p."},
+{n:89,b:"teh",q:"Kāds radiosauklis ir piekabei ar šļūtenēm? (RRP 1. daļa)",a:"114.Š",alts:["114s"],
+  note:"Piekabes saukli veido no „114.X”, X vietā – Š (piekabe ar šļūtenēm). Ja piekabes pilnā masa pārsniedz 750 kg, papildus „e”: „114.e.Š”.",
+  src:"5.pielikums + 3.pielikums, 22.p."},
+
+{n:90,b:"kart",q:"Ko izmanto radiosaukļa vietā amatpersonas, kurām nav piešķirts radiosauklis?",
+  a:"Savu uzvārdu",free:true,
+  note:"Amatpersonas, kurām nav piešķirti saukļi, nepieciešamības gadījumā radiosaukļa vietā izmanto savu uzvārdu.",
+  src:"3.pielikums, 15.p."},
+{n:91,b:"kart",q:"Kādu radiosaukli var izmantot amatpersonas saukļa vietā, ja vienā notikumā strādā viena vai vairākas elpošanai nepiemērotā vidē ekipētas grupas?",
+  a:"„Grupa-1”, „Grupa-2” utt.",alts:["grupa1","grupa1grupa2","grupa12","grupa"],
+  note:"Izmanto amatpersonu saukļus vai radiosaukli „Grupa-1”, „Grupa-2” utt. Vienā sarunu grupā var būt tikai viens notikums, kurā izmanto minētos radiosaukļus.",
+  src:"3.pielikums, 12.p."},
+{n:92,b:"kart",q:"Kādu radiosaukli var izmantot amatpersonas saukļa vietā, ja notikuma vietā strādā viens vai vairāki droni vai bezpilota gaisa kuģi?",
+  a:"„Drons-1”, „Drons-2” utt.",alts:["drons1","drons1drons2","drons12","drons"],
+  note:"Izmanto amatpersonu saukļus vai saukli „Drons-1”, „Drons-2” utt. Vienā sarunu grupā var būt tikai viens notikums, kurā izmanto minētos saukļus.",
+  src:"3.pielikums, 13.p."},
+{n:93,b:"kart",q:"Kādu radiosaukli lieto amatpersonas, kuras dežūrmaiņas laikā pilda ugunsdzēsēja glābēja (autovadītāja) pienākumus?",
+  a:"Attiecīgā automobiļa radiosaukli",free:true,
+  note:"Amatpersonas, kuras norīkotas pildīt dežūrmaiņas laikā ugunsdzēsēja glābēja (autovadītāja) pienākumus, lieto attiecīgā automobiļa radiosaukli.",
+  src:"3.pielikums, 16.p."},
+
+{n:94,b:"bgk",q:"Cik bieži tiek veikta bezpilota gaisa kuģa akumulatora baterijas uzlādes līmeņa kontrole?",
+  a:"Jāpapildina no VUGD BGK dokumenta",free:true,miss:true,
+  note:"Šī jautājuma avots (VUGD iekšējais dokuments par BGK izmantošanu) materiālos netika iesniegts – atbilde jāievada no tā."},
+{n:95,b:"bgk",q:"Kādai jābūt BGK pacelšanās vietai?",
+  a:"Līdzena, cieta, bez šķēršļiem un neiesaistītām personām",free:true,miss:true,
+  note:"Vispārējā prasība: līdzena un cieta virsma, brīva no šķēršļiem, putekļiem/smiltīm un vaļīgiem priekšmetiem, bez neiesaistītām personām, drošā attālumā no elektrolīnijām un lieliem metāla objektiem/magnētiskiem traucējumu avotiem. Precīzs formulējums jāpārbauda VUGD BGK dokumentā, kas netika iesniegts."},
+{n:96,b:"bgk",q:"Kādam jābūt BGK akumulatora uzlādes līmenim, nododot dežūrmaiņu?",
+  a:"Jāpapildina no VUGD BGK dokumenta",free:true,miss:true,
+  note:"Avota dokuments netika iesniegts."},
+{n:97,b:"bgk",q:"Kur struktūrvienībā tiek uzglabāts bezpilota gaisa kuģis?",
+  a:"Jāpapildina no VUGD BGK dokumenta",free:true,miss:true,
+  note:"Avota dokuments netika iesniegts."},
+{n:98,b:"bgk",q:"Cik bieži ir jāpārbauda BGK un jāveic tā atjauninājumi, ja tas netiek izmantots?",
+  a:"Jāpapildina no VUGD BGK dokumenta",free:true,miss:true,
+  note:"Avota dokuments netika iesniegts."},
+{n:99,b:"bgk",q:"Kādā augstumā drīkst lidot ar bezpilota gaisa kuģi atvērtajā kategorijā?",
+  a:"Ne augstāk par 120 m",alts:["120","120m","120metri","lidz120m","nelielaka120"],
+  note:"Atvērtajā kategorijā lidojums notiek ne augstāk par 120 m no zemes vai ūdens virsmas tuvākā punkta. Reljefa gadījumā augstumu mēra no virsmas zem BGK.",
+  src:"Regula (ES) 2019/947, UAS.OPEN.010/020/030/040"},
+{n:100,b:"bgk",q:"Kāda ir pareiza abreviatūra, strādājot ar dronu tiešās redzamības laukā?",
+  a:"VLOS",note:"VLOS – Visual Line Of Sight (tiešās redzamības lauks). Pretstats – BVLOS (Beyond Visual Line Of Sight).",
+  src:"Regula (ES) 2019/947"},
+{n:101,b:"bgk",q:"Ko dara gaisa kuģa novērotājs?",
+  a:"Ar neapbruņotu aci novēro BGK un gaisa telpu, palīdzot tālvadības pilotam",free:true,
+  note:"Bezpilota gaisa kuģa novērotājs atrodas blakus tālvadības pilotam, ar neapbruņotu aci nepārtraukti vizuāli novēro BGK un apkārtējo gaisa telpu, lai laikus atklātu šķēršļus un citus gaisa kuģus, un nekavējoties ziņo pilotam par apdraudējumu, palīdzot izvairīties no sadursmes.",
+  src:"Regula (ES) 2019/947 (UA observer)"},
+{n:102,b:"bgk",q:"Kur var pārbaudīt Latvijā noteiktos lidojuma ģeogrāfiskos ierobežojumus?",
+  a:"Civilās aviācijas aģentūras (CAA) publicētajā dronu ģeogrāfisko zonu kartē",free:true,
+  note:"Ģeogrāfiskās zonas nosaka un publicē Civilās aviācijas aģentūra – tās mājaslapā (caa.gov.lv) pieejamajā dronu lidojumu zonu kartē / ģeogrāfisko zonu informācijas sistēmā. Konkrētās saites nosaukums jāpārbauda pēc aktuālās CAA informācijas.",
+  src:"Regula (ES) 2019/947, 15.pants"},
+{n:103,b:"bgk",q:"Kas nosaka gaisa kuģim attiecināmo klasi (C0–C6)?",
+  a:"Ražotājs – ar klases identifikācijas zīmi",free:true,
+  note:"Klasi nosaka ražotājs, piestiprinot BGK klases identifikācijas zīmi atbilstoši Regulai (ES) 2019/945 – pēc bezpilota gaisa kuģa maksimālās pacelšanās masas un tehniskajiem parametriem (ātrums, enerģija, aprīkojums, ģeonožogojums, tiešā attālinātā identifikācija u.c.).",
+  src:"Regula (ES) 2019/945"},
+{n:104,b:"bgk",q:"Kāds ir CAA izsniegtā tālvadības pilota sertifikāta derīguma termiņš?",
+  a:"5 gadi",alts:["5","5gadi","pieci gadi"],
+  note:"Tālvadības pilota kompetences apliecinājums / sertifikāts ir derīgs 5 gadus, pēc tam tas jāatjauno.",
+  src:"Regula (ES) 2019/947"},
+{n:105,b:"bgk",q:"Kur drīkst pilotēt bezpilota gaisa kuģi, ja ir iegūta A1/A3 kvalifikācija?",
+  a:"A1 un A3 apakškategorijā",free:true,
+  note:"A1 – var lidot pāri (atsevišķām) neiesaistītām personām, bet nekad pāri cilvēku pulcēšanās vietām. A3 – tikai teritorijā, kur neatrodas neiesaistītas personas, un ne mazāk kā 150 m no dzīvojamām, komerciālām, industriālām un atpūtas zonām. A2 (tuvu cilvēkiem) prasa atsevišķu A2 apliecību.",
+  src:"Regula (ES) 2019/947, UAS.OPEN.020/040"},
+{n:106,b:"bgk",q:"Vai atļauts pārlidot pāri neiesaistītām personām ar C1 klases BGK?",
+  a:"Nē – apzināti nedrīkst",free:true,
+  note:"Ar C1 klases BGK (A1 apakškategorija) nedrīkst apzināti lidot pāri neiesaistītām personām un kategoriski nedrīkst lidot pāri cilvēku pulcēšanās vietām. Ja pārlidojums notiek neparedzēti, pārlidojuma laiks jāsamazina līdz minimumam.",
+  src:"Regula (ES) 2019/947, UAS.OPEN.020"},
+{n:107,b:"bgk",q:"Vai VUGD amatpersona, veicot dienesta pienākumus, drīkst veikt lidojumus, neievērojot ģeogrāfisko zonu aizliegumus un ierobežojumus?",
+  a:"Jāpapildina no VUGD BGK dokumenta",free:true,miss:true,
+  note:"Atbilde izriet no VUGD iekšējā dokumenta un nacionālā regulējuma par valsts iestāžu lidojumiem neatliekamu uzdevumu veikšanai; avota dokuments netika iesniegts, tāpēc atbilde nav apstiprināma."},
+{n:108,b:"bgk",q:"Kāds ir minimālais lidošanas augstums, pārlidojot trešajām personām piederošam īpašumam?",
+  a:"Jāpapildina no VUGD BGK dokumenta",free:true,miss:true,
+  note:"Nacionāla / iekšēja prasība; avota dokuments netika iesniegts."},
+{n:109,b:"bgk",q:"Kāda apakškategorija atbilst neapdzīvotai, lauku videi?",
+  a:"A3",note:"A3 – lidojumi tālu no cilvēkiem: teritorijā, kur pamatoti var uzskatīt, ka neiesaistītas personas neatrodas, un ne mazāk kā 150 m horizontāli no dzīvojamām, komerciālām, industriālām un atpūtas zonām.",
+  src:"Regula (ES) 2019/947, UAS.OPEN.040"},
+{n:110,b:"bgk",q:"Kādā minimālajā augstumā drīkst pārlidot trešās personas?",
+  a:"Jāpapildina no VUGD BGK dokumenta",free:true,miss:true,
+  note:"Avota dokuments netika iesniegts. Regulā (ES) 2019/947 A2 apakškategorijai noteikts horizontālais drošais attālums (30 m vai 5 m mazā ātruma režīmā), nevis augstums, tāpēc skaitlis jāņem no VUGD dokumenta."},
+{n:111,b:"bgk",q:"Vai VUGD amatpersona drīkst likt pārtraukt 3. personām izmantot bezpilota gaisa kuģi?",
+  a:"Jāpapildina no VUGD BGK dokumenta",free:true,miss:true,
+  note:"Avota dokuments netika iesniegts."},
+{n:112,b:"bgk",q:"Kam jāveic kalibrācija, lai izvairītos no magnētisko lauku traucējumiem?",
+  a:"Kompasam (magnetometram)",alts:["kompass","kompasam","magnetometrs","magnetometram"],
+  note:"Kompasa (magnetometra) kalibrācija – veic atklātā vietā, atstatu no metāla konstrukcijām, dzelzbetona, elektrolīnijām un citiem magnētisko traucējumu avotiem."},
+{n:113,b:"bgk",q:"Kam jāveic kalibrācija, lai iztaisnotu kameras leņķi?",
+  a:"Kardānam / gimbalam (kameras stabilizatoram)",alts:["gimbals","gimbalam","gimbal","kardans","kardanam","kameras stabilizators"],
+  note:"Gimbala (kardāna stiprinājuma) kalibrācija – novērš sasvērtu horizontu un nepareizu kameras leņķi. Veic uz līdzenas horizontālas virsmas."}
+];
+
+/* ============ HELPERS ============ */
+const DIA={"ā":"a","č":"c","ē":"e","ģ":"g","ī":"i","ķ":"k","ļ":"l","ņ":"n","š":"s","ū":"u","ž":"z"};
+function norm(s){
+  return (s||"").toLowerCase().replace(/[āčēģīķļņšūž]/g,c=>DIA[c]||c)
+    .replace(/[^a-z0-9]/g,"");
+}
+function accepts(item){
+  const set=new Set();
+  set.add(norm(item.a));
+  (item.alts||[]).forEach(x=>set.add(norm(x)));
+  const m=norm(item.a).match(/^([a-z]*)(\d)(\d)$/); if(m) set.add(m[1]+m[2]);
+  return set;
+}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const KEY="vugd-radio-v2";
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return{}}}
+function save(o){try{localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}}
+
+/* ============ STATE ============ */
+const st=Object.assign({mode:"flash",blocks:Object.keys(B),shuffle:true,onlyWrong:false,
+  results:{},pos:0,order:[]},load());
+st.blocks=(st.blocks&&st.blocks.length)?st.blocks:Object.keys(B);
+st.results=st.results||{};
+let revealed=false, checked=null;
+
+/* ============ BUILD ORDER ============ */
+function pool(){
+  let p=Q.filter(x=>st.blocks.includes(x.b));
+  if(st.onlyWrong) p=p.filter(x=>st.results[x.n]==="no");
+  return p;
+}
+function rebuild(keepPos){
+  let p=pool().map(x=>x.n);
+  if(st.shuffle){for(let i=p.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[p[i],p[j]]=[p[j],p[i]]}}
+  st.order=p;
+  if(!keepPos) st.pos=0;
+  if(st.pos>=st.order.length) st.pos=Math.max(0,st.order.length-1);
+  revealed=false; checked=null;
+  save(st); render();
+}
+const byN=n=>Q.find(x=>x.n===n);
+
+/* ============ RENDER: controls ============ */
+const chipsEl=document.getElementById("blockChips");
+function renderChips(){
+  chipsEl.innerHTML=Object.entries(B).map(([k,v])=>{
+    const c=Q.filter(x=>x.b===k).length;
+    return `<button class="chip" data-b="${k}" aria-pressed="${st.blocks.includes(k)}">${esc(v.short)}<span class="cnt">${c}</span></button>`;
+  }).join("");
+}
+chipsEl.addEventListener("click",e=>{
+  const b=e.target.closest(".chip"); if(!b) return;
+  const k=b.dataset.b;
+  st.blocks=st.blocks.includes(k)?st.blocks.filter(x=>x!==k):st.blocks.concat(k);
+  if(!st.blocks.length) st.blocks=[k];
+  renderChips(); rebuild(); renderTable();
+});
+document.getElementById("modeSeg").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-mode]"); if(!b) return;
+  st.mode=b.dataset.mode;
+  [...e.currentTarget.children].forEach(x=>x.setAttribute("aria-pressed",String(x===b)));
+  document.getElementById("quizView").hidden=(st.mode==="browse");
+  document.getElementById("browseView").hidden=(st.mode!=="browse");
+  document.getElementById("optRow").hidden=(st.mode==="browse");
+  revealed=false; checked=null; save(st); render(); renderTable();
+});
+document.getElementById("shuf").addEventListener("change",e=>{st.shuffle=e.target.checked;rebuild()});
+document.getElementById("onlyWrong").addEventListener("change",e=>{st.onlyWrong=e.target.checked;rebuild()});
+document.getElementById("restart").addEventListener("click",()=>{st.results={};st.onlyWrong=false;
+  document.getElementById("onlyWrong").checked=false;rebuild()});
+document.getElementById("themeBtn").addEventListener("click",()=>{
+  const r=document.documentElement;
+  const cur=r.getAttribute("data-theme");
+  const sysDark=matchMedia("(prefers-color-scheme:dark)").matches;
+  r.setAttribute("data-theme", cur? (cur==="dark"?"light":"dark") : (sysDark?"light":"dark"));
+});
+
+/* ============ RENDER: quiz ============ */
+function mark(n,v){st.results[n]=v;save(st)}
+function render(){
+  const card=document.getElementById("card");
+  const tot=st.order.length;
+  const done=Object.keys(st.results).filter(k=>pool().some(x=>x.n===+k)).length;
+  const ok=Object.entries(st.results).filter(([k,v])=>v==="ok"&&pool().some(x=>x.n===+k)).length;
+  const no=done-ok;
+  document.getElementById("pos").textContent=tot?Math.min(st.pos+1,tot):0;
+  document.getElementById("total").textContent=tot;
+  document.getElementById("scOk").textContent=ok;
+  document.getElementById("scNo").textContent=no;
+  document.getElementById("pct").textContent=done?Math.round(ok/done*100)+"% pareizi":"";
+  document.getElementById("barOk").style.width=tot?(ok/tot*100)+"%":"0%";
+  document.getElementById("barNo").style.width=tot?(no/tot*100)+"%":"0%";
+
+  if(!tot){
+    card.innerHTML=`<div class="done"><div class="big">0</div>
+      <p style="color:var(--ink-2);margin:8px 0 0">Nav atlasītu jautājumu. Izvēlies tematu vai izslēdz „Tikai nezināmie”.</p></div>`;
+    return;
+  }
+  if(st.pos>=tot){
+    card.innerHTML=`<div class="done"><div class="lbl">Rezultāts</div>
+      <div class="big" style="color:${ok===tot?"var(--ok)":"var(--accent-ink)"}">${ok} / ${tot}</div>
+      <p style="color:var(--ink-2);margin:6px 0 16px">Nezināmie: ${no}</p>
+      <div class="btns" style="justify-content:center">
+        ${no?`<button class="bt primary" id="againWrong">Atkārtot ${no} nezināmos</button>`:""}
+        <button class="bt" id="againAll">No sākuma</button></div></div>`;
+    const aw=document.getElementById("againWrong");
+    if(aw) aw.onclick=()=>{st.onlyWrong=true;document.getElementById("onlyWrong").checked=true;rebuild()};
+    document.getElementById("againAll").onclick=()=>{st.results={};st.onlyWrong=false;
+      document.getElementById("onlyWrong").checked=false;rebuild()};
+    return;
+  }
+
+  const it=byN(st.order[st.pos]);
+  const typed = st.mode==="type" && !it.free;
+  const tags=[`<span class="tag">${esc(B[it.b].short)}</span>`];
+  if(it.miss) tags.push(`<span class="tag warnt">nav avota</span>`);
+  else if(it.src&&/Regula/.test(it.src)) tags.push(`<span class="tag">regula</span>`);
+  if(st.mode==="type"&&it.free) tags.push(`<span class="tag">brīva atbilde</span>`);
+
+  let body="";
+  if(typed && checked===null){
+    body=`<input type="text" id="inp" placeholder="piem. 101. / Rīga 5 / OVP 2…9" autocomplete="off"
+      autocapitalize="off" spellcheck="false">
+      <div class="btns"><button class="bt primary wide" id="chk">Pārbaudīt</button>
+      <button class="bt" id="skip">Nezinu</button></div>
+      <div class="hint">Diakritiskās zīmes, punkti un atstarpes netiek vērtēti. Enter = pārbaudīt.</div>`;
+  } else if(typed){
+    body=`<div class="verdict ${checked.ok?"good":"bad"}">${checked.ok?"✓ Pareizi":"✗ Nepareizi"}
+      ${checked.val?`<span style="font-family:var(--mono);font-weight:600;opacity:.85">— tava atbilde: ${esc(checked.val)}</span>`:""}</div>
+      ${ansHTML(it)}
+      <div class="btns"><button class="bt primary wide" id="next">Nākamais →</button>
+      ${checked.ok?"":`<button class="bt" id="reask">Atbildēt vēlreiz</button>`}</div>`;
+  } else if(!revealed){
+    body=`<div class="btns"><button class="bt primary wide" id="rev">Parādīt atbildi</button></div>
+      <div class="hint">Atstarpe / Enter = parādīt atbildi</div>`;
+  } else {
+    body=`${ansHTML(it)}
+      <div class="btns"><button class="bt good wide" id="gOk">Zināju</button>
+      <button class="bt bad wide" id="gNo">Nezināju</button></div>`;
+  }
+
+  card.innerHTML=`<div class="card-top"><span class="num">Nr. ${it.n}</span>${tags.join("")}
+      <span class="tag" style="margin-left:auto;border:0;color:var(--ink-3)">${st.pos+1}/${tot}</span></div>
+    <div class="q">${esc(it.q)}</div><div class="card-body">${body}</div>`;
+
+  const $=id=>document.getElementById(id);
+  if($("rev")) $("rev").onclick=()=>{revealed=true;render()};
+  if($("gOk")) $("gOk").onclick=()=>{mark(it.n,"ok");advance()};
+  if($("gNo")) $("gNo").onclick=()=>{mark(it.n,"no");advance()};
+  if($("next")) $("next").onclick=advance;
+  if($("reask")) $("reask").onclick=()=>{checked=null;render()};
+  if($("skip")) $("skip").onclick=()=>{checked={ok:false,val:""};mark(it.n,"no");render()};
+  if($("chk")) $("chk").onclick=doCheck;
+  if($("inp")){$("inp").focus();$("inp").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();doCheck()}}}
+
+  function doCheck(){
+    const v=$("inp").value.trim();
+    const ok=accepts(it).has(norm(v)) && norm(v)!=="";
+    checked={ok,val:v}; mark(it.n,ok?"ok":"no"); render();
+  }
+}
+function ansHTML(it){
+  const cls=it.free?"a-text":"a-main";
+  return `<div class="ans${it.miss?" miss":""}">
+    <div class="lbl" style="margin-bottom:5px">${it.miss?"Nepieciešams avots":"Atbilde"}</div>
+    <div class="${cls}">${esc(it.a)}</div>
+    ${it.note?`<div class="a-note">${esc(it.note)}</div>`:""}
+    ${it.src?`<div class="a-src">Avots: ${esc(it.src)}</div>`:""}</div>`;
+}
+function advance(){st.pos++;revealed=false;checked=null;save(st);render();window.scrollTo({top:0,behavior:"smooth"})}
+
+document.addEventListener("keydown",e=>{
+  if(st.mode==="browse"||e.target.tagName==="INPUT") return;
+  if(st.mode==="flash"&&(e.key===" "||e.key==="Enter")){e.preventDefault();
+    if(!revealed){revealed=true;render()}else{mark(st.order[st.pos],"ok");advance()}}
+  if(st.mode==="flash"&&revealed&&(e.key==="1"||e.key==="z")){mark(st.order[st.pos],"ok");advance()}
+  if(st.mode==="flash"&&revealed&&(e.key==="2"||e.key==="n")){mark(st.order[st.pos],"no");advance()}
+});
+
+/* ============ RENDER: browse ============ */
+const tb=document.getElementById("tbody"), sEl=document.getElementById("search");
+function renderTable(){
+  const f=norm(sEl.value);
+  let rows="",cur="";
+  Q.filter(x=>st.blocks.includes(x.b))
+   .filter(x=>!f||norm(x.q).includes(f)||norm(x.a).includes(f)||norm(x.note||"").includes(f)||String(x.n)===sEl.value.trim())
+   .forEach(x=>{
+    if(x.b!==cur){cur=x.b;rows+=`<tr class="grp"><td colspan="3">${esc(B[cur].name)}</td></tr>`}
+    rows+=`<tr><td class="n">${x.n}</td><td>${esc(x.q)}${x.note?`<div style="color:var(--ink-3);font-size:12px;margin-top:4px">${esc(x.note)}</div>`:""}</td>
+      <td class="a${x.free?" free":""}"${x.miss?' style="color:var(--warn)"':""}>${esc(x.a)}</td></tr>`;
+  });
+  tb.innerHTML=rows||`<tr><td colspan="3" style="color:var(--ink-3);padding:18px">Nav rezultātu.</td></tr>`;
+}
+sEl.addEventListener("input",renderTable);
+
+/* ============ INIT ============ */
+document.getElementById("shuf").checked=st.shuffle;
+document.getElementById("onlyWrong").checked=st.onlyWrong;
+[...document.getElementById("modeSeg").children].forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===st.mode)));
+document.getElementById("quizView").hidden=(st.mode==="browse");
+document.getElementById("browseView").hidden=(st.mode!=="browse");
+document.getElementById("optRow").hidden=(st.mode==="browse");
+renderChips();
+if(!st.order.length||!st.order.every(n=>byN(n))) rebuild(); else render();
+renderTable();
+</script>
