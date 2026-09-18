@@ -152,6 +152,14 @@ h1{margin:4px 0 0;font-family:var(--ser);font-weight:500;font-size:clamp(25px,6.
 .a-txt{font-size:15.5px;font-weight:600;line-height:1.45;margin-top:5px}
 .ans.miss .a-code,.ans.miss .a-txt{color:var(--warn)}
 .a-note{margin-top:9px;font-size:13px;color:var(--ink-2);line-height:1.55}
+.a-warn{margin-top:9px;font-size:12.5px;line-height:1.5;color:var(--warn);background:var(--warn-soft);
+  border:1px solid var(--warn-line);border-radius:9px;padding:8px 10px}
+.ans.own{border-left-color:var(--ok)}
+.tag.ed{color:var(--ok);border-color:var(--ok-line);background:var(--ok-soft)}
+.edb{flex:none;width:27px;height:27px;margin-left:8px;border-radius:8px;border:1px solid var(--line);
+  background:var(--surface-2);color:var(--ink-3);font-size:12px;cursor:pointer;display:grid;place-items:center}
+.edb:hover{color:var(--accent-ink);border-color:var(--line-2);background:var(--surface-3)}
+input.ed-in{font-family:var(--sans);font-size:15px;font-weight:500}
 .a-src{margin-top:9px;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
 
 /* ---------- inputs / buttons ---------- */
@@ -256,10 +264,11 @@ footer b{color:var(--ink-2)}
   </div>
 
   <footer>
-    <b>Par 94.–113. jautājumu (bezpilota gaisa kuģi):</b> to avota dokuments (VUGD iekšējie noteikumi par BGK)
-    nav iesniegts. Atbildes, kas balstītas Regulā (ES) 2019/947 un 2019/945, atzīmētas ar <span class="tag">regula</span>.
-    Astoņi jautājumi ar atzīmi <span class="tag w">nav avota</span> gaida VUGD dokumentu un
-    4-variantu režīmā netiek rādīti.
+    <b>Visi 113 jautājumi ir testā.</b> Atbildes uz 1.–93. jautājumu ir iegūtas no rīkojuma 22-1.7/2804
+    pielikumiem. BGK jautājumos atzīme <span class="tag">regula</span> nozīmē Regulu (ES) 2019/947 vai 2019/945,
+    bet <span class="tag w">nav avota</span> — ka VUGD iekšējais dokuments par BGK netika iesniegts un atbilde ir
+    pamatots pieņēmums (jautājumi 94.–98., 107., 108., 110., 111.). Tādu atbildi vari pārrakstīt ar pogu
+    <b>✎</b> kartītes stūrī — tava versija saglabājas pārlūkā un aizstāj manu visos režīmos.
   </footer>
 </div>
 
@@ -457,17 +466,26 @@ const Q=[
   src:"3.pielikums, 16.p."},
 
 {n:94,b:"bgk",q:"Cik bieži tiek veikta bezpilota gaisa kuģa akumulatora baterijas uzlādes līmeņa kontrole?",
-  a:"Jāpapildina no VUGD BGK dokumenta",free:true,miss:true,
-  note:"Šī jautājuma avots (VUGD iekšējais dokuments par BGK izmantošanu) materiālos netika iesniegts – atbilde jāievada no tā."},
+  a:"Katru dežūrmaiņu – pieņemot un nododot dežūrmaiņu",free:true,unver:true,
+  opts:["Reizi nedēļā","Reizi mēnesī","Tikai tieši pirms lidojuma"],
+  note:"Šī atbilde ir loģisks pieņēmums, nevis citāts: VUGD iekšējais dokuments par BGK izmantošanu materiālos netika iesniegts. Pārbaudi to dokumentā un pārraksti atbildi ar pogu „Labot”."},
 {n:95,b:"bgk",q:"Kādai jābūt BGK pacelšanās vietai?",
-  a:"Līdzena, cieta, bez šķēršļiem un neiesaistītām personām",free:true,miss:true,
+  a:"Līdzenai, cietai, bez šķēršļiem un neiesaistītām personām",free:true,unver:true,
+  opts:["Asfaltētai un vismaz 10 × 10 m lielai","Paaugstinātai vietai ar labu pārskatu",
+    "Jebkurai vietai ārpus ģeogrāfiskās zonas"],
   note:"Vispārējā prasība: līdzena un cieta virsma, brīva no šķēršļiem, putekļiem un vaļīgiem priekšmetiem, bez neiesaistītām personām, drošā attālumā no elektrolīnijām un lieliem metāla objektiem. Precīzs formulējums jāpārbauda VUGD BGK dokumentā, kas netika iesniegts."},
 {n:96,b:"bgk",q:"Kādam jābūt BGK akumulatora uzlādes līmenim, nododot dežūrmaiņu?",
-  a:"Jāpapildina no VUGD BGK dokumenta",free:true,miss:true,note:"Avota dokuments netika iesniegts."},
+  a:"Pilnībā uzlādētam (100 %)",free:true,unver:true,
+  opts:["Ne mazāk par 50 %","Ne mazāk par 75 %","Nav noteikts – kāds ir"],
+  note:"Pieņēmums, nevis citāts – avota dokuments netika iesniegts. Pārbaudi un pārraksti ar pogu „Labot”."},
 {n:97,b:"bgk",q:"Kur struktūrvienībā tiek uzglabāts bezpilota gaisa kuģis?",
-  a:"Jāpapildina no VUGD BGK dokumenta",free:true,miss:true,note:"Avota dokuments netika iesniegts."},
+  a:"Tam paredzētajā vietā transportēšanas somā, gatavs nekavējotai izbraukšanai",free:true,unver:true,
+  opts:["Jebkurā brīvā skapī garāžā","Pastāvīgi pieslēgts uzlādes stacijai","Dežūrmaiņas telpā uz galda"],
+  note:"Pieņēmums, nevis citāts – avota dokuments netika iesniegts. Pārbaudi un pārraksti ar pogu „Labot”."},
 {n:98,b:"bgk",q:"Cik bieži ir jāpārbauda BGK un jāveic tā atjauninājumi, ja tas netiek izmantots?",
-  a:"Jāpapildina no VUGD BGK dokumenta",free:true,miss:true,note:"Avota dokuments netika iesniegts."},
+  a:"Ne retāk kā reizi mēnesī",free:true,unver:true,
+  opts:["Reizi nedēļā","Reizi ceturksnī","Reizi gadā"],
+  note:"Pieņēmums, nevis citāts – avota dokuments netika iesniegts. Pārbaudi un pārraksti ar pogu „Labot”."},
 {n:99,b:"bgk",q:"Kādā augstumā drīkst lidot ar bezpilota gaisa kuģi atvērtajā kategorijā?",
   a:"Ne augstāk par 120 m",alts:["120","120m","120metri"],
   opts:["Ne augstāk par 50 m","Ne augstāk par 100 m","Ne augstāk par 150 m"],
@@ -508,19 +526,24 @@ const Q=[
   note:"Ar C1 klases BGK (A1 apakškategorija) nedrīkst apzināti lidot pāri neiesaistītām personām un kategoriski nedrīkst lidot pāri cilvēku pulcēšanās vietām. Ja pārlidojums notiek neparedzēti, pārlidojuma laiks jāsamazina līdz minimumam.",
   src:R947+", UAS.OPEN.020"},
 {n:107,b:"bgk",q:"Vai VUGD amatpersona, veicot dienesta pienākumus, drīkst veikt lidojumus, neievērojot ģeogrāfisko zonu aizliegumus un ierobežojumus?",
-  a:"Jāpapildina no VUGD BGK dokumenta",free:true,miss:true,
-  note:"Atbilde izriet no VUGD iekšējā dokumenta un nacionālā regulējuma par valsts iestāžu lidojumiem neatliekamu uzdevumu veikšanai; avota dokuments netika iesniegts."},
+  a:"Jā – veicot neatliekamus dienesta (ugunsdzēsības un glābšanas) pienākumus",free:true,unver:true,
+  opts:["Nē, nekādā gadījumā","Jā, jebkurā laikā un bez nosacījumiem",
+    "Tikai ar CAA iepriekšēju rakstisku atļauju katram lidojumam"],
+  note:"Pieņēmums, kas balstīts uz vispārējo principu par valsts iestāžu lidojumiem neatliekamu uzdevumu veikšanai; precīzs formulējums un nosacījumi jāpārbauda VUGD BGK dokumentā, kas netika iesniegts."},
 {n:108,b:"bgk",q:"Kāds ir minimālais lidošanas augstums, pārlidojot trešajām personām piederošam īpašumam?",
-  a:"Jāpapildina no VUGD BGK dokumenta",free:true,miss:true,
-  note:"Nacionāla vai iekšēja prasība; avota dokuments netika iesniegts."},
+  a:"30 m",free:true,unver:true,opts:["10 m","50 m","120 m"],
+  note:"Pieņēmums, nevis citāts – šī ir nacionāla vai iekšēja prasība, un avota dokuments netika iesniegts. Skaitlis noteikti jāpārbauda un jāpārraksta ar pogu „Labot”."},
 {n:109,b:"bgk",q:"Kāda apakškategorija atbilst neapdzīvotai, lauku videi?",a:"A3",opts:["A1","A2","C3"],
   note:"A3 – lidojumi tālu no cilvēkiem: teritorijā, kur pamatoti var uzskatīt, ka neiesaistītas personas neatrodas, un ne mazāk kā 150 m horizontāli no dzīvojamām, komerciālām, industriālām un atpūtas zonām.",
   src:R947+", UAS.OPEN.040"},
 {n:110,b:"bgk",q:"Kādā minimālajā augstumā drīkst pārlidot trešās personas?",
-  a:"Jāpapildina no VUGD BGK dokumenta",free:true,miss:true,
-  note:"Avota dokuments netika iesniegts. Regulā (ES) 2019/947 A2 apakškategorijai noteikts horizontālais drošais attālums (30 m vai 5 m mazā ātruma režīmā), nevis augstums, tāpēc skaitlis jāņem no VUGD dokumenta."},
+  a:"30 m",free:true,unver:true,opts:["5 m","10 m","50 m"],
+  note:"Pieņēmums, nevis citāts. Regulā (ES) 2019/947 A2 apakškategorijai noteikts horizontālais drošais attālums (30 m vai 5 m mazā ātruma režīmā), nevis augstums, tāpēc skaitlis jāņem no VUGD dokumenta un jāpārraksta ar pogu „Labot”."},
 {n:111,b:"bgk",q:"Vai VUGD amatpersona drīkst likt pārtraukt 3. personām izmantot bezpilota gaisa kuģi?",
-  a:"Jāpapildina no VUGD BGK dokumenta",free:true,miss:true,note:"Avota dokuments netika iesniegts."},
+  a:"Jā – ja tas traucē vai apdraud ugunsdzēsības un glābšanas darbus",free:true,unver:true,
+  opts:["Nē, to var darīt tikai Valsts policija","Nē, to var darīt tikai Civilās aviācijas aģentūra",
+    "Jā, jebkurā gadījumā un bez pamatojuma"],
+  note:"Pieņēmums, nevis citāts – avota dokuments netika iesniegts. Pārbaudi un pārraksti ar pogu „Labot”."},
 {n:112,b:"bgk",q:"Kam jāveic kalibrācija, lai izvairītos no magnētisko lauku traucējumiem?",
   a:"Kompasam (magnetometram)",alts:["kompass","kompasam","magnetometrs","magnetometram"],
   opts:["Kardānam (gimbalam)","Akumulatora baterijai","Tālvadības pultij"],
@@ -537,8 +560,9 @@ const DIA={"ā":"a","č":"c","ē":"e","ģ":"g","ī":"i","ķ":"k","ļ":"l","ņ":"
 const norm=s=>(s||"").toLowerCase().replace(/[āčēģīķļņšūž]/g,c=>DIA[c]||c).replace(/[^a-z0-9]/g,"");
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const byN=n=>Q.find(x=>x.n===n);
+const ansOf=it=>(st.custom&&st.custom[it.n])||it.a;
 function accepts(it){
-  const s=new Set([norm(it.a)]);(it.alts||[]).forEach(x=>s.add(norm(x)));
+  const s=new Set([norm(ansOf(it))]);(it.alts||[]).forEach(x=>s.add(norm(x)));
   const m=norm(it.a).match(/^([a-z]*)(\d)(\d)$/);if(m)s.add(m[1]+m[2]);
   return s;
 }
@@ -551,9 +575,10 @@ function tailNum(a){const m=String(a).match(/(\d+)(?:…\d+)?$/);return m?+m[1]:
 const tmpl=a=>/X$/.test(String(a));
 function genOpts(it){
   if(it.opts) return it.opts.slice(0,3);
-  const same=Q.filter(x=>x.b===it.b&&x.n!==it.n&&!x.miss&&!x.free&&!tmpl(x.a));
-  const mine=numVal(it.a), pref=(String(it.a).match(/^([A-Za-zĀ-ž]+)\s/)||[])[1];
-  const mt=tailNum(it.a), dig=String(mine||"").length;
+  const same=Q.filter(x=>x.b===it.b&&x.n!==it.n&&!x.unver&&!x.free&&!tmpl(x.a));
+  const A=ansOf(it);
+  const mine=numVal(A), pref=(String(A).match(/^([A-Za-zĀ-ž]+)\s/)||[])[1];
+  const mt=tailNum(A), dig=String(mine||"").length;
   let pool=[];
   if(pref){ // "Rīga 5" family: same prefix, nearest ordinal first
     const sib=same.filter(x=>String(x.a).startsWith(pref+" "));
@@ -566,9 +591,9 @@ function genOpts(it){
       return w(numVal(p.a))-w(numVal(r.a))||String(p.a).localeCompare(String(r.a));
     }).map(x=>x.a);
   } else pool=same.map(x=>x.a);
-  const out=[],seen=new Set([it.a]);
+  const out=[],seen=new Set([ansOf(it)]);
   for(const c of pool){if(out.length>=3)break;if(seen.has(c))continue;seen.add(c);out.push(c)}
-  for(const x of Q){if(out.length>=3)break;if(x.free||x.miss||tmpl(x.a)||seen.has(x.a))continue;
+  for(const x of Q){if(out.length>=3)break;if(x.free||x.unver||tmpl(x.a)||seen.has(x.a))continue;
     seen.add(x.a);out.push(x.a)}
   return out;
 }
@@ -579,15 +604,14 @@ const save=o=>{try{localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}};
 
 /* ==================== STATE ==================== */
 const st=Object.assign({mode:"mc",blocks:Object.keys(B),shuffle:true,onlyWrong:false,
-  results:{},pos:0,order:[]},load());
+  results:{},custom:{},pos:0,order:[]},load());
 st.blocks=(st.blocks&&st.blocks.length)?st.blocks:Object.keys(B);
-st.results=st.results||{};
+st.results=st.results||{};st.custom=st.custom||{};
 let revealed=false,checked=null,picked=null;
 const mcCache={};
 
 function pool(){
   let p=Q.filter(x=>st.blocks.includes(x.b));
-  if(st.mode==="mc") p=p.filter(x=>!x.miss);
   if(st.onlyWrong) p=p.filter(x=>st.results[x.n]==="no");
   return p;
 }
@@ -602,8 +626,7 @@ const chipsEl=document.getElementById("blockChips");
 function renderChips(){
   chipsEl.innerHTML=Object.entries(B).map(([k,v])=>{
     const tot=Q.filter(x=>x.b===k).length;
-    const avail=st.mode==="mc"?Q.filter(x=>x.b===k&&!x.miss).length:tot;
-    return `<button class="chip" data-b="${k}" aria-pressed="${st.blocks.includes(k)}">${esc(v.short)}<span class="cnt">${avail}</span></button>`;
+    return `<button class="chip" data-b="${k}" aria-pressed="${st.blocks.includes(k)}">${esc(v.short)}<span class="cnt">${tot}</span></button>`;
   }).join("");
 }
 chipsEl.onclick=e=>{const b=e.target.closest(".chip");if(!b)return;const k=b.dataset.b;
@@ -666,13 +689,14 @@ function render(){
 
   const it=byN(st.order[st.pos]);
   const tags=[`<span class="tag">${esc(B[it.b].short)}</span>`];
-  if(it.miss)tags.push(`<span class="tag w">nav avota</span>`);
+  if(st.custom[it.n])tags.push(`<span class="tag ed">tava atbilde</span>`);
+  else if(it.unver)tags.push(`<span class="tag w">nav avota</span>`);
   else if(it.src&&/Regula/.test(it.src))tags.push(`<span class="tag">regula</span>`);
 
   let body="";
   if(st.mode==="mc"){
     if(!mcCache[it.n]){
-      const arr=[{t:it.a,ok:true}].concat(genOpts(it).map(t=>({t,ok:false})));
+      const arr=[{t:ansOf(it),ok:true}].concat(genOpts(it).map(t=>({t,ok:false})));
       for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}
       mcCache[it.n]=arr;
     }
@@ -715,8 +739,18 @@ function render(){
   }
 
   card.innerHTML=`<div class="chead"><span class="num">Nr. ${it.n}</span>${tags.join("")}
-    <span class="counter">${st.pos+1} / ${tot}</span></div>
-    <div class="q">${esc(it.q)}</div><div class="cbody">${body}</div>`;
+    <span class="counter">${st.pos+1} / ${tot}</span>
+    <button class="edb" id="edBtn" title="Labot atbildi" aria-label="Labot atbildi">✎</button></div>
+    <div class="q">${esc(it.q)}</div><div class="cbody">${body}
+    <div id="edBox" hidden>
+      <div class="lbl" style="margin-bottom:6px">Pareizā atbilde no dokumenta</div>
+      <input class="big ed-in" type="text" id="edIn" value="${esc(ansOf(it))}" autocomplete="off">
+      <div class="btns" style="margin-top:8px">
+        <button class="bt primary" id="edSave">Saglabāt</button>
+        <button class="bt" id="edCancel">Atcelt</button>
+        ${st.custom[it.n]?`<button class="bt" id="edReset">Atjaunot sākotnējo</button>`:""}</div>
+      <div class="hint" style="margin-top:7px">Saglabājas šajā pārlūkā un aizstāj atbildi visos režīmos.</div>
+    </div>`;
 
   const $=id=>document.getElementById(id);
   card.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
@@ -728,16 +762,27 @@ function render(){
   if($("reask"))$("reask").onclick=()=>{checked=null;render()};
   if($("skip"))$("skip").onclick=()=>{checked={ok:false,val:""};mark(it.n,"no");render()};
   if($("chk"))$("chk").onclick=doCheck;
+  $("edBtn").onclick=()=>{const bx=$("edBox");bx.hidden=!bx.hidden;if(!bx.hidden)$("edIn").focus()};
+  $("edSave").onclick=()=>{const v=$("edIn").value.trim();
+    if(v&&v!==it.a)st.custom[it.n]=v;else delete st.custom[it.n];
+    delete mcCache[it.n];picked=null;checked=null;save(st);render();renderTable()};
+  $("edCancel").onclick=()=>{$("edBox").hidden=true};
+  if($("edReset"))$("edReset").onclick=()=>{delete st.custom[it.n];delete mcCache[it.n];
+    picked=null;checked=null;save(st);render();renderTable()};
+  $("edIn").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();$("edSave").click()}
+    if(e.key==="Escape")$("edBox").hidden=true};
   if($("inp")){$("inp").focus();$("inp").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();doCheck()}}}
   function doCheck(){const v=$("inp").value.trim();
     const good=v!==""&&accepts(it).has(norm(v));
     checked={ok:good,val:v};mark(it.n,good?"ok":"no");render()}
 }
 function ansHTML(it,compact){
-  return `<div class="ans${it.miss?" miss":""}">
-    <div class="lbl">${it.miss?"Nepieciešams avots":compact?"Pareizā atbilde":"Atbilde"}</div>
-    <div class="${it.free?"a-txt":"a-code"}">${esc(it.a)}</div>
-    ${it.note?`<div class="a-note">${esc(it.note)}</div>`:""}
+  const mine=st.custom[it.n], warn=it.unver&&!mine;
+  return `<div class="ans${warn?" miss":""}${mine?" own":""}">
+    <div class="lbl">${mine?"Tava atbilde":compact?"Pareizā atbilde":"Atbilde"}</div>
+    <div class="${it.free?"a-txt":"a-code"}">${esc(ansOf(it))}</div>
+    ${warn?`<div class="a-warn">⚠ Nav apstiprināts avotā — pieņēmums. Pārbaudi VUGD dokumentā un pārraksti ar ✎.</div>`:""}
+    ${it.note&&!mine?`<div class="a-note">${esc(it.note)}</div>`:""}
     ${it.src?`<div class="a-src">Avots: ${esc(it.src)}</div>`:""}</div>`;
 }
 function advance(){st.pos++;revealed=false;checked=null;picked=null;save(st);render();
@@ -765,13 +810,13 @@ const tb=document.getElementById("tbody"),sEl=document.getElementById("search");
 function renderTable(){
   const f=norm(sEl.value),raw=sEl.value.trim();let rows="",cur="";
   Q.filter(x=>st.blocks.includes(x.b))
-   .filter(x=>!f||norm(x.q).includes(f)||norm(x.a).includes(f)||norm(x.note||"").includes(f)||String(x.n)===raw)
+   .filter(x=>!f||norm(x.q).includes(f)||norm(ansOf(x)).includes(f)||norm(x.note||"").includes(f)||String(x.n)===raw)
    .forEach(x=>{
     if(x.b!==cur){cur=x.b;rows+=`<tr class="grp"><td colspan="3">${esc(B[cur].name)}</td></tr>`}
     rows+=`<tr><td class="n">${x.n}</td><td>${esc(x.q)}${x.note?
       `<div style="color:var(--ink-3);font-size:12px;margin-top:5px;line-height:1.5">${esc(x.note)}</div>`:""}
       ${x.src?`<div style="color:var(--ink-3);font-family:var(--mono);font-size:10.5px;margin-top:5px">${esc(x.src)}</div>`:""}</td>
-      <td class="a${x.free?" free":""}"${x.miss?' style="color:var(--warn)"':""}>${esc(x.a)}</td></tr>`});
+      <td class="a${x.free?" free":""}"${x.unver&&!st.custom[x.n]?' style="color:var(--warn)"':""}>${esc(ansOf(x))}</td></tr>`});
   tb.innerHTML=rows||`<tr><td colspan="3" style="color:var(--ink-3);padding:20px">Nav rezultātu.</td></tr>`;
 }
 sEl.oninput=renderTable;
