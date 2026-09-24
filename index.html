@@ -160,6 +160,35 @@ main { padding: 22px 0 48px; }
 .miss .ex { display: block; color: var(--ink-soft); font-size: 12.5px; margin-top: 5px; }
 footer { text-align: center; font-family: var(--mono); font-size: 11px; color: var(--ink-faint); padding: 0 20px 26px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* ---- bāzes meklēšana ---- */
+.lookup { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
+.find-row { display: flex; gap: 8px; align-items: stretch; }
+.find { flex: 1 1 auto; min-width: 0; font-family: var(--display); font-size: 14.5px;
+  padding: 11px 13px; border: 1px solid var(--line); border-radius: 3px;
+  background: var(--paper); color: var(--ink); }
+.find::placeholder { color: var(--ink-faint); }
+.find:focus-visible { outline: 2px solid var(--signal); outline-offset: 1px; border-color: var(--signal); }
+.find-x { flex: 0 0 auto; border: 1px solid var(--line); background: var(--ash);
+  color: var(--ink-soft); border-radius: 3px; padding: 0 13px; font-size: 13px; cursor: pointer; }
+.find-x:hover { background: var(--ash-deep); color: var(--ink); }
+.hits-info { font-family: var(--mono); font-size: 11px; letter-spacing: .04em;
+  color: var(--ink-faint); margin: 13px 0 0; }
+.hit { border-top: 1px solid var(--line-soft); padding: 15px 0 3px; }
+.hit-code { font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--slate); }
+.hit-q { font-family: var(--read); font-size: 15.5px; font-weight: 600; line-height: 1.45;
+  margin: 6px 0 10px; }
+.hit-o { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
+.hit-o div { position: relative; padding-left: 22px; font-size: 13px; line-height: 1.5;
+  color: var(--ink-soft); }
+.hit-o div .mk { position: absolute; left: 0; top: 0; font-family: var(--mono); font-size: 11.5px; }
+.hit-o div.is-ok { color: var(--good); font-weight: 600; }
+.hit-e { font-size: 12.5px; line-height: 1.6; color: var(--ink-soft);
+  border-left: 2px solid var(--slate); background: var(--slate-tint);
+  padding: 9px 12px; border-radius: 0 3px 3px 0; }
+.hit-more { padding: 14px 0 2px; text-align: center; }
+.hits mark { background: var(--ochre-tint); color: var(--ink); padding: 0 1px; border-radius: 2px; }
 </style>
 <header>
   <div class="wrap">
@@ -198,6 +227,25 @@ footer { text-align: center; font-family: var(--mono); font-size: 11px; color: v
   }
   function saveWeak(list) { store("et_weak", JSON.stringify(list.slice(-400))); }
 
+  /* ---- diakritiku nedzēšoša, garumu saglabājoša normalizācija ---- */
+  var DIA = { "\u0101": "a", "\u010d": "c", "\u0113": "e", "\u0123": "g", "\u012b": "i",
+              "\u0137": "k", "\u013c": "l", "\u0146": "n", "\u0161": "s", "\u016b": "u",
+              "\u017e": "z" };
+  function fold(s) {
+    return String(s).toLowerCase().replace(/[\u0101\u010d\u0113\u0123\u012b\u0137\u013c\u0146\u0161\u016b\u017e]/g,
+      function (c) { return DIA[c]; });
+  }
+  function hl(text, needle) {
+    text = String(text);
+    if (!needle) return esc(text);
+    var f = fold(text), n = fold(needle), out = "", i = 0, p;
+    while ((p = f.indexOf(n, i)) > -1) {
+      out += esc(text.slice(i, p)) + "<mark>" + esc(text.slice(p, p + n.length)) + "</mark>";
+      i = p + n.length;
+    }
+    return out + esc(text.slice(i));
+  }
+
   function shuffled(a) {
     var r = a.slice();
     for (var i = r.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = r[i]; r[i] = r[j]; r[j] = t; }
@@ -208,6 +256,8 @@ footer { text-align: center; font-family: var(--mono); font-size: 11px; color: v
   var count = 25;
   var mixOpts = true;
   var S = null;
+  var find = "";
+  var findLimit = 25;
 
   /* ---------------- setup ---------------- */
   function setup(msg) {
@@ -221,7 +271,7 @@ footer { text-align: center; font-family: var(--mono); font-size: 11px; color: v
       '<div class="card pad">' +
       (msg ? '<div class="sec-title">' + esc(msg) + "</div>" : "") +
       "<h2>Sagatavo testu</h2>" +
-      '<p class="lede">Izvēlies bloku un jautājumu skaitu. Pēc katras atbildes uzreiz redzēsi, kā ir pareizi un kāpēc. Nepareizi atbildētie jautājumi tiek saglabāti, lai tos varētu atkārtot atsevišķi. Testa laikā atbildi izvēlas ar cipariem 1–6, Enter ved tālāk, Esc vai poga „sākums” atgriež šeit.</p>' +
+      '<p class="lede">Izvēlies bloku un jautājumu skaitu. Pēc katras atbildes uzreiz redzēsi, kā ir pareizi un kāpēc. Nepareizi atbildētie jautājumi tiek saglabāti, lai tos varētu atkārtot atsevišķi. Testa laikā atbildi izvēlas ar cipariem 1–6, Enter ved tālāk, Esc vai poga „sākums” atgriež šeit. Ja vajag atrast konkrētu jautājumu vai pārbaudīt atbildi, izmanto meklēšanu lapas apakšā — tā strādā pa visu bāzi.</p>' +
       '<div class="field-label">Bloki</div><div class="blocks">' +
       TOPICS.map(function (t) {
         return '<label class="blk' + (t.indexOf(KEY) === 0 ? " key" : "") + '"><input type="checkbox" data-t="' + esc(t) + '"' +
@@ -236,6 +286,13 @@ footer { text-align: center; font-family: var(--mono); font-size: 11px; color: v
       '<button class="lnk" id="all">visi bloki</button><button class="lnk" id="only">tikai GDV TESTS</button>' +
       '<label class="hint" style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="mix"' +
       (mixOpts ? " checked" : "") + "> jaukt atbilžu secību</label></div>" +
+      '<div class="lookup">' +
+      '<div class="field-label">Meklēt bāzē &middot; ' + Q.length + ' jautājumi</div>' +
+      '<div class="find-row">' +
+      '<input class="find" id="find" type="text" autocomplete="off" spellcheck="false" ' +
+      'placeholder="piem. autokāpne &middot; 113 &middot; VLOS &middot; Sp\u012bkeri &middot; BGK 11" value="' + esc(find) + '">' +
+      '<button class="find-x" id="findx" type="button">Not\u012br\u012bt</button></div>' +
+      '<div class="hits" id="hits"></div></div>' +
       (weakAvail ? '<div class="weak">Kļūdainie jautājumi iepriekšējos mēģinājumos: <b>' + weakAvail + '</b>. ' +
         '<button class="lnk" id="drill">trenēt tikai tos</button> &middot; <button class="lnk" id="clear">notīrīt sarakstu</button></div>' : "") +
       "</div>";
@@ -252,7 +309,9 @@ footer { text-align: center; font-family: var(--mono); font-size: 11px; color: v
       b.addEventListener("click", function () { count = parseInt(b.getAttribute("data-n"), 10); setup(); });
     });
     app.querySelector("#all").addEventListener("click", function () { picked = TOPICS.slice(); setup(); });
-    app.querySelector("#only").addEventListener("click", function () { picked = [EXAM]; setup(); });
+    app.querySelector("#only").addEventListener("click", function () {
+      picked = TOPICS.filter(function (t) { return t.indexOf(KEY) === 0; }); setup();
+    });
     var mix = app.querySelector("#mix");
     mix.addEventListener("change", function () { mixOpts = mix.checked; });
     var go = app.querySelector("#go");
@@ -264,6 +323,67 @@ footer { text-align: center; font-family: var(--mono); font-size: 11px; color: v
     });
     var clear = app.querySelector("#clear");
     if (clear) clear.addEventListener("click", function () { saveWeak([]); setup("saraksts notīrīts"); });
+
+    var fi = app.querySelector("#find");
+    fi.addEventListener("input", function () { find = fi.value; findLimit = 25; hits(); });
+    fi.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); find = ""; fi.value = ""; findLimit = 25; hits(); }
+    });
+    app.querySelector("#findx").addEventListener("click", function () {
+      find = ""; fi.value = ""; findLimit = 25; hits(); fi.focus();
+    });
+    hits();
+  }
+
+  /* ---------------- bāzes meklēšana ---------------- */
+  function hitRank(q, n) {
+    var pf = fold(q.p || "").replace(/\s+/g, ""), nf = n.replace(/\s+/g, "");
+    if (pf && nf && pf.indexOf(nf) === 0) return 0;          /* jautājuma kods: "bgk11", "gdv5.35" */
+    if (fold(q.q).indexOf(n) > -1) return 1;
+    for (var i = 0; i < q.o.length; i++) if (fold(q.o[i]).indexOf(n) > -1) return q.c === i ? 2 : 3;
+    if (fold(q.e || "").indexOf(n) > -1) return 4;
+    if (fold(q.t).indexOf(n) > -1) return 5;
+    if (pf && nf && pf.indexOf(nf) > -1) return 6;           /* koda vidusdaļa — vājākā sakritība */
+    return 9;
+  }
+  function hits() {
+    var box = document.getElementById("hits");
+    if (!box) return;
+    var n = fold(find).trim();
+    if (n.length < 2) {
+      box.innerHTML = '<p class="hits-info">Ieraksti vismaz divas zīmes — meklē visos ' + Q.length +
+        ' jautājumos, atbildēs un skaidrojumos. Garumzīmes un mīkstinājumi nav obligāti.</p>';
+      return;
+    }
+    var found = Q.map(function (q) { return { q: q, r: hitRank(q, n) }; })
+                 .filter(function (x) { return x.r < 9; });
+    found.sort(function (a, b) { return a.r - b.r || a.q.id - b.q.id; });
+    if (!found.length) {
+      box.innerHTML = '<p class="hits-info">Nav atrasts neviens jautājums pēc „' + esc(find) + '”.</p>';
+      return;
+    }
+    var show = found.slice(0, findLimit);
+    box.innerHTML =
+      '<p class="hits-info">Atrasti: ' + found.length +
+      (found.length > show.length ? ' &middot; rāda ' + show.length : '') + '</p>' +
+      show.map(function (x) {
+        var q = x.q;
+        return '<div class="hit"><div class="hit-code">' + hl(q.t, find) +
+          (q.p ? ' &middot; ' + hl(q.p, find) : '') + '</div>' +
+          '<div class="hit-q">' + hl(q.q, find) + '</div>' +
+          (q.img ? '<img class="qimg" style="max-width:300px;margin:0 0 10px" src="' + q.img + '" alt="">' : '') +
+          '<div class="hit-o">' + q.o.map(function (o, i) {
+            return '<div class="' + (i === q.c ? 'is-ok' : '') + '"><span class="mk">' +
+              (i === q.c ? '&#10003;' : String.fromCharCode(97 + i) + '.') + '</span>' + hl(o, find) + '</div>';
+          }).join('') + '</div>' +
+          (q.e ? '<div class="hit-e">' + hl(q.e, find) + (q.s ? '<span class="src">' + hl(q.s, find) + '</span>' : '') + '</div>' : '') +
+          '</div>';
+      }).join('') +
+      (found.length > show.length
+        ? '<div class="hit-more"><button class="lnk" id="more">rādīt vēl ' +
+          Math.min(50, found.length - show.length) + '</button></div>' : '');
+    var more = document.getElementById("more");
+    if (more) more.addEventListener("click", function () { findLimit += 50; hits(); });
   }
 
   /* ---------------- run ---------------- */
